@@ -10,41 +10,31 @@ CITY_PAIR_OUT_DATE_ = '//*[@id="cityPair-outDate-0"]'
 PAIR_RET_DATE_ = '//*[@id="cityPair-retDate-0"]'
 
 urlWeb = "http://matrix.itasoftware.com/"
-exitAirport = "BCN"
-arriveAirport = "VLC"
-
 driver = webdriver.Firefox()
 driver.get(urlWeb)
 
 
-def method_name():
+def fieldSugestionBox(selector, airport):
     global elem, wait, airportCode, xpathSelector_, el
-    elem = driver.find_element_by_xpath(CITY_PAIR_ORIG_)
+    elem = driver.find_element_by_xpath(selector)
     elem.clear()
-    elem.send_keys(exitAirport)
+    elem.send_keys(airport)
     wait = WebDriverWait(driver, 10)
-    airportCode = exitAirport
-    xpathSelector_ = "//span[contains(text(),'(" + airportCode + ")')]"
+    xpathSelector_ = "//span[contains(text(),'(" + airport + ")')]"
     el = wait.until(EC.element_to_be_clickable((By.XPATH, xpathSelector_))).click()
 
 
-method_name()
+def method(selector, data):
+    elem = driver.find_element_by_xpath(selector)
+    elem.clear()
+    elem.send_keys(data)
+    elem.send_keys(Keys.INSERT)
 
-elem = driver.find_element_by_xpath(CITY_PAIR_DEST_)
-elem.clear()
-elem.send_keys(arriveAirport)
-airportCode = arriveAirport
-xpathSelector_ = "//span[contains(text(),'(" + airportCode + ")')]"
-el = wait.until(EC.element_to_be_clickable((By.XPATH, xpathSelector_))).click()
 
-elem = driver.find_element_by_xpath(CITY_PAIR_OUT_DATE_)
-elem.clear()
-elem.send_keys("08/03/2018")
-elem.send_keys(Keys.INSERT)
+fieldSugestionBox(CITY_PAIR_ORIG_, "BCN")
+fieldSugestionBox(CITY_PAIR_DEST_, "VLC")
 
-elem = driver.find_element_by_xpath(PAIR_RET_DATE_)
-elem.clear()
-elem.send_keys("08/05/2018")
-elem.send_keys(Keys.INSERT)
+method(CITY_PAIR_OUT_DATE_, "08/03/2018")
+method(PAIR_RET_DATE_, "08/05/2018")
 
 driver.find_element_by_xpath('//*[@id="searchButton-0"]').click()
