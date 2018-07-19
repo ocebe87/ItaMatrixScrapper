@@ -4,7 +4,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
+
+# from Flight import Flight
+from sample.Flight import Flight
 
 BOX_ORIG_ = '//*[@id="cityPair-orig-0"]'
 BOX_DEST_ = '//*[@id="cityPair-dest-0"]'
@@ -44,14 +46,12 @@ driver.find_element_by_xpath(SEARCH_BUTTON_).click()
 h3 = wait.until_not(EC.element_to_be_clickable(
     (By.XPATH, '/html/body/div[1]/div/div/div/div/div/div[2]/div[1]/div/div[6]/div[5]/div/div/a')))
 
-for ele in driver.find_elements_by_class("IR6M2QD-u-j"):
-    hover = ActionChains(driver).move_to_element(ele)
-    hover.perform()
-
 soup = BeautifulSoup(driver.page_source, 'html.parser')
+print(soup.prettify())
 
-# print(soup.prettify())
-# myDivs = soup.findAll("div", {"class": "IR6M2QD-u-j"})
-#
-# for f in myDivs:
-#     BeautifulSoup(f, 'html.parser').
+for f in soup.findAll("div", {"class": "IR6M2QD-u-j"}):
+    airLine = f.find("div", {"class": "IR6M2QD-u-b"}).text
+    airLine = f.findAll("div", {"class": "IR6M2QD-u-f"}).text
+    f.get('a')
+
+    flight = Flight(airLine, '', '')
