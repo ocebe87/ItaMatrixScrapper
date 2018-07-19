@@ -5,7 +5,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-# from Flight import Flight
 from sample.Flight import Flight
 
 BOX_ORIG_ = '//*[@id="cityPair-orig-0"]'
