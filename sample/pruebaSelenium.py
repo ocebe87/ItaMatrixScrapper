@@ -1,5 +1,8 @@
+import time
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -48,25 +51,39 @@ def search_page():
 def fill_search_fields():
     fill_suggestion_box(BOX_ORIG_, "BCN")
     fill_suggestion_box(BOX_DEST_, "VLC")
-    fill_date_box(OUT_DATE_, "08/03/2018")
-    fill_date_box(RET_DATE_, "08/05/2018")
+    fill_date_box(OUT_DATE_, "09/03/2018")
+    fill_date_box(RET_DATE_, "09/05/2018")
 
 
 def result_page():
     wait.until_not(EC.element_to_be_clickable(
         (By.XPATH, LOADING_MESSAGE_)))
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    elements = driver.find_elements_by_xpath('//div[@class="IR6M2QD-u-j"]')
+    # elements = driver.find_elements_by_xpath('//span[text()="Details"]')
+    aux = None
+    for element in elements:
+        if aux is not None:
+            wait.until_not(EC.visibility_of(aux))
 
-    flights = []
-    for f in soup.findAll(DIV_, {CLASS_: FLIGHT_BOX_}):
-        airLine = f.find(DIV_, AIRLINE_DIV_).string
-        departureGo = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[0].string
-        arriveGo = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[1].string
-        departureCome = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[2].string
-        arriveCome = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[3].string
+        ActionChains(driver).move_to_element(element).perform()
+        details = element.find_element_by_xpath('//span[text()="Details"]')
+        ActionChains(driver).move_to_element(details).perform()
+        details.click()
+        # element.click()
+        aux = details
 
-        flights.append(Flight(airLine, departureGo, arriveGo, departureCome, arriveCome))
-    flights.count()
+    # soup = BeautifulSoup(driver.page_source, 'html.parser')
+    #
+    # flights = []
+    # for f in soup.findAll(DIV_, {CLASS_: FLIGHT_BOX_}):
+    #     airLine = f.find(DIV_, AIRLINE_DIV_).string
+    #     departureGo = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[0].string
+    #     arriveGo = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[1].string
+    #     departureCome = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[2].string
+    #     arriveCome = f.findAll(DIV_, {CLASS_: TIME_DIVS_})[3].string
+    #
+    #     flights.append(Flight(airLine, departureGo, arriveGo, departureCome, arriveCome))
+    # flights.count()
 
 
 search_page()
